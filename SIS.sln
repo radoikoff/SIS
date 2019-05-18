@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIS.HTTP", "SIS.HTTP\SIS.HT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIS.WebServer", "SIS.WebServer\SIS.WebServer.csproj", "{A815456A-6DA9-4ECF-9DDC-8B7613B85FE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIS.TestApp", "SIS.TestApp\SIS.TestApp.csproj", "{AFD5D1F2-01BC-44A9-AFD2-4A207DA54F8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A815456A-6DA9-4ECF-9DDC-8B7613B85FE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A815456A-6DA9-4ECF-9DDC-8B7613B85FE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A815456A-6DA9-4ECF-9DDC-8B7613B85FE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFD5D1F2-01BC-44A9-AFD2-4A207DA54F8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD5D1F2-01BC-44A9-AFD2-4A207DA54F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD5D1F2-01BC-44A9-AFD2-4A207DA54F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD5D1F2-01BC-44A9-AFD2-4A207DA54F8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
