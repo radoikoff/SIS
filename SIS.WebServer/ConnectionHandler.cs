@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using SIS.HTTP.Common;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Exceptions;
@@ -26,16 +27,16 @@ namespace SIS.WebServer
             this.serverRoutingTable = serverRoutingTable;
         }
 
-        private IHttpRequest ReadRequest()
+        private async Task<IHttpRequest> ReadRequestAsync()
         {
             //Parse request from binary data
 
-            var result = new StringBuilder(); 
+            var result = new StringBuilder();
             var data = new ArraySegment<byte>(new byte[1024]);
 
             while (true)
             {
-                int numberOfBytesRead = this.client.Receive(data.Array, SocketFlags.None);
+                int numberOfBytesRead = await this.client.ReceiveAsync(data.Array, SocketFlags.None);
 
                 if (numberOfBytesRead == 0)
                 {
@@ -70,21 +71,22 @@ namespace SIS.WebServer
 
             return this.serverRoutingTable.Get(httpRequest.RequestMethod, httpRequest.Path).Invoke(httpRequest);
         }
-        private void PrepareResponse(IHttpResponse httpResponse)
+
+        private async Task PrepareResponse(IHttpResponse httpResponse)
         {
             //Map to binary data and send tot he client.
 
             byte[] byteResponse = httpResponse.GetBytes();
-            this.client.Send(byteResponse, SocketFlags.None);
+            await this.client.SendAsync(byteResponse, SocketFlags.None);
         }
 
-        internal void ProcessRequest()
+        public async Task ProcessRequestAsync()
         {
             IHttpResponse httpResponse = null;
 
             try
             {
-                var httpRequest = this.ReadRequest();
+                var httpRequest = await this.ReadRequestAsync();
 
                 if (httpRequest != null)
                 {
@@ -101,7 +103,7 @@ namespace SIS.WebServer
                 httpResponse = new TextResult(ex.ToString(), HttpResponseStatusCode.InternalServerError);
             }
 
-            this.PrepareResponse(httpResponse);
+            await this.PrepareResponse(httpResponse);
             this.client.Shutdown(SocketShutdown.Both);
         }
     }
