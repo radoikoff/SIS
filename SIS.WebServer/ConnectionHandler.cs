@@ -30,7 +30,7 @@ namespace SIS.WebServer
         {
             //Parse request from binary data
 
-            var result = new StringBuilder();
+            var result = new StringBuilder(); 
             var data = new ArraySegment<byte>(new byte[1024]);
 
             while (true)

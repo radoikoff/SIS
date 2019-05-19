@@ -39,12 +39,13 @@ namespace SIS.WebServer
 
             while (isRunning)
             {
+                Console.WriteLine("Waiting for client...");
                 var client = this.tcpListener.AcceptSocket();
                 this.Listen(client);
             }
         }
 
-        public void Listen(Socket client)
+        private void Listen(Socket client)
         {
             var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
             connectionHandler.ProcessRequest();
