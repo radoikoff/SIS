@@ -2,6 +2,7 @@
 using SIS.HTTP.Headers;
 using SIS.HTTP.Requests;
 using SIS.HTTP.Responses;
+using SIS.TestApp.Controllers;
 using SIS.WebServer;
 using SIS.WebServer.Results;
 using SIS.WebServer.Routing;
@@ -34,7 +35,7 @@ namespace SIS.TestApp
             //Console.WriteLine(Encoding.UTF8.GetString(response.GetBytes()));
 
             IServerRoutingTable serverRoutingTable = new ServerRoutingTable();
-            serverRoutingTable.Add(HttpRequestMethod.Get, "/", request => new HtmlResult("<h1>Hello World!</h1>", HttpResponseStatusCode.OK));
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/", request => new HomeController().Home(request));
 
             Server server = new Server(8000, serverRoutingTable);
 
