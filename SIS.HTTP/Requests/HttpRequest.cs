@@ -1,4 +1,6 @@
 ﻿using SIS.HTTP.Common;
+using SIS.HTTP.Cookies;
+using SIS.HTTP.Cookies.Contracts;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Exceptions;
 using SIS.HTTP.Headers;
@@ -20,6 +22,7 @@ namespace SIS.HTTP.Requests
             this.FormData = new Dictionary<string, object>();
             this.QueryData = new Dictionary<string, object>();
             this.Headers = new HttpHeaderCollection();
+            this.Cookies = new HttpCookieCollection();
 
             this.ParseRequest(requestString);
         }
@@ -35,6 +38,8 @@ namespace SIS.HTTP.Requests
         public IHttpHeaderCollection Headers { get; }
 
         public HttpRequestMethod RequestMethod { get; private set; }
+
+        public IHttpCookieCollection Cookies { get; }
 
 
 
@@ -156,9 +161,26 @@ namespace SIS.HTTP.Requests
 
             this.ParseRequestHeaders(this.ParsePlainRequestHeaders(splitRequestContent).ToArray());
 
-            //this.ParseCookies();
+            this.ParseCookies();
             this.ParseRequestParameters(splitRequestContent[splitRequestContent.Length - 1]);
         }
 
+        private void ParseCookies()
+        {
+            if (this.Headers.ContainsHeader(HttpHeader.Cookie))
+            {
+                string value = this.Headers.GetHeader(HttpHeader.Cookie).Value;
+                string[] unparsedCookies = value.Split(new[] { "; " }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string unparsedCookie in unparsedCookies)
+                {
+                    string[] cookieKvp = unparsedCookie.Split(new[] { '=' }, 2);
+
+                    HttpCookie httpCookie = new HttpCookie(cookieKvp[0], cookieKvp[1], false);
+
+                    this.Cookies.AddCookie(httpCookie);
+                }
+            }
+        }
     }
 }
