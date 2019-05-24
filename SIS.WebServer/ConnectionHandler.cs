@@ -12,6 +12,7 @@ using SIS.HTTP.Responses.Contracts;
 using SIS.HTTP.Sessions;
 using SIS.WebServer.Results;
 using SIS.WebServer.Routing.Contracts;
+using SIS.WebServer.Sessions;
 
 namespace SIS.WebServer
 {
@@ -120,8 +121,9 @@ namespace SIS.WebServer
                 if (httpRequest != null)
                 {
                     Console.WriteLine($"Processing: {httpRequest.RequestMethod} {httpRequest.Path}...");
-                    httpResponse = this.HandleRequest(httpRequest);
+                    
                     string sessionId = this.SetRequestSession(httpRequest);
+                    httpResponse = this.HandleRequest(httpRequest);
                     this.SetResponseSession(httpResponse, sessionId);
                 }
             }

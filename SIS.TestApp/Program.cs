@@ -36,6 +36,9 @@ namespace SIS.TestApp
 
             IServerRoutingTable serverRoutingTable = new ServerRoutingTable();
             serverRoutingTable.Add(HttpRequestMethod.Get, "/", request => new HomeController().Home(request));
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/login", httpRequest => new HomeController().Login(httpRequest));
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/logout", httpRequest => new HomeController().Logout(httpRequest));
+
 
             Server server = new Server(8000, serverRoutingTable);
 
