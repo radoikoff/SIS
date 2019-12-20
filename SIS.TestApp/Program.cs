@@ -1,4 +1,5 @@
-﻿using SIS.HTTP.Enums;
+﻿using App.Data;
+using SIS.HTTP.Enums;
 using SIS.HTTP.Headers;
 using SIS.HTTP.Requests;
 using SIS.HTTP.Responses;
@@ -16,28 +17,22 @@ namespace SIS.TestApp
     {
         static void Main(string[] args)
         {
-            //string request = "POST /fff/uhu?Id=5&name=john#fragment HTTP/1.1\r\n"
-            //               + "Host: localhost:5000\r\n"
-            //               + "Autorization: bla bla bla 00e0rr40r4\r\n"
-            //               + "Date: " + DateTime.Now + "\r\n"
-            //               + "\r\n"
-            //               + "username=pesho&password=123";
-
-
-
-            //HttpRequest httpRequest = new HttpRequest(request);
-
-            //HttpResponse response = new HttpResponse(HttpResponseStatusCode.BadRequest);
-            //response.AddHeader(new HttpHeader("Host", "localhost:99999"));
-            //response.AddHeader(new HttpHeader("Date", "0343434304343"));
-
-            //response.Content = Encoding.UTF8.GetBytes("<h1>Hello</h1>");
-            //Console.WriteLine(Encoding.UTF8.GetString(response.GetBytes()));
+            using (var context = new AppDbContext())
+            {
+                context.Database.EnsureCreated();
+            }
 
             IServerRoutingTable serverRoutingTable = new ServerRoutingTable();
-            serverRoutingTable.Add(HttpRequestMethod.Get, "/", request => new HomeController().Home(request));
-            serverRoutingTable.Add(HttpRequestMethod.Get, "/login", httpRequest => new HomeController().Login(httpRequest));
-            serverRoutingTable.Add(HttpRequestMethod.Get, "/logout", httpRequest => new HomeController().Logout(httpRequest));
+            // Get
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/", httpRequest => new HomeController(httpRequest).Index(httpRequest));
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/login", httpRequest => new UsersController().Login(httpRequest));
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/register", httpRequest => new UsersController().Register(httpRequest));
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/logout", httpRequest => new UsersController().Logout(httpRequest));
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/home", httpRequest => new HomeController(httpRequest).Home(httpRequest));
+
+            // Post
+            serverRoutingTable.Add(HttpRequestMethod.Post, "/login", httpRequest => new UsersController().LoginConfirm(httpRequest));
+            serverRoutingTable.Add(HttpRequestMethod.Post, "/register", httpRequest => new UsersController().RegisterConfirm(httpRequest));
 
 
             Server server = new Server(8000, serverRoutingTable);

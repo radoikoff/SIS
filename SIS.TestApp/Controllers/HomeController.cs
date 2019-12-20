@@ -9,23 +9,25 @@ namespace SIS.TestApp.Controllers
 {
     public class HomeController : BaseController
     {
-        public IHttpResponse Home(IHttpRequest httpRequest)
+        public HomeController(IHttpRequest httpRequest)
         {
             this.HttpRequest = httpRequest;
+        }
 
+        public IHttpResponse Index(IHttpRequest httpRequest)
+        {
             return this.View();
         }
 
-        public IHttpResponse Login(IHttpRequest httpRequest)
+        public IHttpResponse Home(IHttpRequest httpRequest)
         {
-            httpRequest.Session.AddParameter("username", "vasko");
-            return this.Redirect("/");
-        }
+            if (!this.IsLoggedIn())
+            {
+                return this.Redirect("/login");
+            }
 
-        public IHttpResponse Logout(IHttpRequest httpRequest)
-        {
-            httpRequest.Session.ClearParameters();
-            return this.Redirect("/");
+            this.viewData["Username"] = this.HttpRequest.Session.GetParameter("username");
+            return this.View();
         }
     }
 }

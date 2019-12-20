@@ -15,8 +15,10 @@ namespace SIS.TestApp.Controllers
     {
         protected IHttpRequest HttpRequest { get; set; }
 
+        protected Dictionary<string, object> viewData = new Dictionary<string, object>();
 
-        private bool IsLoggedIn()
+
+        protected bool IsLoggedIn()
         {
             return this.HttpRequest.Session.ContainsParameter("username");
         }
@@ -24,14 +26,12 @@ namespace SIS.TestApp.Controllers
 
         private string ParseTemplate(string viewContent)
         {
-            if (this.IsLoggedIn())
+            foreach (var item in this.viewData)
             {
-                return viewContent.Replace("@Model.HelloMessage", $"Hello {this.HttpRequest.Session.GetParameter("username")}");
+                viewContent = viewContent.Replace($"@Model.{item.Key}", item.Value.ToString());
             }
-            else
-            {
-                return viewContent.Replace("@Model.HelloMessage", $"Hello World. SIS Server");
-            }
+
+            return viewContent;
         }
 
         public IHttpResponse View([CallerMemberName] string view = null)
@@ -44,7 +44,7 @@ namespace SIS.TestApp.Controllers
 
             HtmlResult htmlResult = new HtmlResult(viewContent, HttpResponseStatusCode.OK);
 
-            htmlResult.Cookies.AddCookie(new HttpCookie("lang", "en"));
+            //htmlResult.Cookies.AddCookie(new HttpCookie("lang", "en"));
 
             return htmlResult;
         }

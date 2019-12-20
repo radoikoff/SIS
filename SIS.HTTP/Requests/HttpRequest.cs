@@ -133,11 +133,23 @@ namespace SIS.HTTP.Requests
             {
                 //TODO: Parse multiple parameters by name (id=1&id=5). To be parced to collection
 
-                this.Url.Split('?', '#')[1]
-                        .Split('&')
-                        .Select(plainQueryParam => plainQueryParam.Split('='))
-                        .ToList()
-                        .ForEach(queryParamKvp => this.FormData.Add(queryParamKvp[0], queryParamKvp[1]));
+                var paramsPairs = requestBody.Split('&')
+                                             .Select(qp => qp.Split('='))
+                                             .ToArray();
+
+                foreach (var paramPair in paramsPairs)
+                {
+                    string key = paramPair[0];
+                    string value = paramPair[1];
+
+
+                    if (!this.FormData.ContainsKey(key))
+                    {
+                        this.FormData.Add(key, value);
+                    }
+
+                    this.FormData[key] = value;
+                }
             }
         }
 
